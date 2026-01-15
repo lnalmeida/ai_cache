@@ -1,0 +1,19 @@
+tee .gitignore > /dev/null <<'EOF'
+# User-specific files
+*.DotSettings
+*.suo
+*.user
+
+# Build results
+[Bb]in/
+[Oo]bj/
+
+# Local database files
+*.db
+*.mdf
+*.ldf
+/src/Database/
+
+# Rider/JetBrains
+.idea/
+EOF
