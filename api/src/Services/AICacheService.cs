@@ -18,7 +18,7 @@ public class AICacheService : IAICacheService
     {
         try
         {
-            _logger.LogInformation("Salvando código: {Filename}", request.FileName);
+            _logger.LogInformation("Salvando registro: {Filename}", request.FileName);
 
             if (string.IsNullOrWhiteSpace(request.Response) || request.Response.Length < 10)
             {
@@ -68,7 +68,7 @@ public class AICacheService : IAICacheService
             }
             else
             {
-                _logger.LogInformation("Novo código salvo: {Filename}", aiResponse.FileName);
+                _logger.LogInformation("Novo registro salvo: {Filename}", aiResponse.FileName);
                 aiResponse = await _repository.SaveAsync(aiResponse);
             }
 
@@ -78,12 +78,12 @@ public class AICacheService : IAICacheService
             {
                 Success = true,
                 Data = aiResponse,
-                Message = existing != null ? "Código atualizado com sucesso" : "Código salvo com sucesso"
+                Message = existing != null ? "Registro atualizado com sucesso" : "Registro salvo com sucesso"
             };
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro salvando código");
+            _logger.LogError(ex, "Erro salvando registro");
             return new ServiceResult<AIResponse>
             {
                 Success = false,
@@ -117,7 +117,7 @@ public class AICacheService : IAICacheService
         var result = await _repository.GetByPromprHashAsync(hash);
         return result != null
             ? new ServiceResult<AIResponse> { Success = true, Data = result }
-            : new ServiceResult<AIResponse> { Success = false, Message = "Código não encontrado" };
+            : new ServiceResult<AIResponse> { Success = false, Message = "Registro não encontrado" };
     }
     
     
