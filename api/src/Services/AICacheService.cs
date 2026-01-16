@@ -6,12 +6,29 @@ namespace AICacheAPI.Services;
 public class AICacheService : IAICacheService
 {
     private readonly IAICacheRepository _repository;
-    private readonly  ILogger<AICacheService> _logger;
-    
+    private readonly ILogger<AICacheService> _logger;
+
     public AICacheService(IAICacheRepository repository, ILogger<AICacheService> logger)
     {
         _repository = repository;
         _logger = logger;
+    }
+
+    public async Task<ServiceResult<PagedResult<AIResponse>>> GetAllPromptsPagedAsync(int page, int pageSize)
+    {
+        var results = await _repository.GetAllPromptsPagedAsync(page, pageSize);
+        return ServiceResult<PagedResult<AIResponse>>.Ok(results);
+    }
+
+    public async Task<ServiceResult<PagedResult<AIResponse>>> SearchPagedAsync(string? query, int page, int pageSize)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            return await GetAllPromptsPagedAsync(page, pageSize);
+        }
+
+        var results = await _repository.SearchPagedAsync(query, page, pageSize);
+        return ServiceResult<PagedResult<AIResponse>>.Ok(results);
     }
 
     public async Task<ServiceResult<AIResponse>> SaveCodeAsync(SaveRequest request)
@@ -22,39 +39,27 @@ public class AICacheService : IAICacheService
 
             if (string.IsNullOrWhiteSpace(request.Response) || request.Response.Length < 10)
             {
-                return new ServiceResult<AIResponse>
-                {
-                    Success = false,
-                    Message = "Response deve ter pelo menos 10 caracteres"
-                };
+                return ServiceResult<AIResponse>.Fail("Response deve ter pelo menos 10 caracteres");
             }
 
             if (string.IsNullOrWhiteSpace(request.Prompt))
             {
-                return new ServiceResult<AIResponse>
-                {
-                    Success = false,
-                    Message = "Prompt não informado"
-                };
+                return ServiceResult<AIResponse>.Fail("Prompt não informado");
             }
-            
+
             if (string.IsNullOrWhiteSpace(request.FileName))
             {
-                return new ServiceResult<AIResponse>
-                {
-                    Success = false,
-                    Message = "Nome de arquivo não informado"
-                };
+                return ServiceResult<AIResponse>.Fail("Nome de arquivo não informado");
             }
 
             var promptHash = GenerateHash(request.Prompt);
-            
+
             var existing = await _repository.GetByPromprHashAsync(promptHash);
             var aiResponse = new AIResponse
             {
                 PromptHash = promptHash,
                 Prompt = request.Prompt[..Math.Min(request.Prompt.Length, 500)],
-                Response =  request.Response[..Math.Min(request.Response.Length, 500)],
+                Response = request.Response[..Math.Min(request.Response.Length, 500)],
                 Tags = CleanTags(request.Tags ?? ""),
                 TechStack = CleanTags(request.TechStack ?? ""),
                 FileName = request.FileName
@@ -74,53 +79,22 @@ public class AICacheService : IAICacheService
 
             await _repository.SaveChangesAsync();
 
-            return new ServiceResult<AIResponse>
-            {
-                Success = true,
-                Data = aiResponse,
-                Message = existing != null ? "Registro atualizado com sucesso" : "Registro salvo com sucesso"
-            };
+            return ServiceResult<AIResponse>.Ok(aiResponse, existing != null ? "Registro atualizado com sucesso" : "Registro salvo com sucesso");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro salvando registro");
-            return new ServiceResult<AIResponse>
-            {
-                Success = false,
-                Error = "Erro interno do servidor"
-            };
+            return ServiceResult<AIResponse>.Fail("Erro interno do servidor", ex.Message);
         }
-    }
-    
-
-    public async Task<ServiceResult<IEnumerable<AIResponse>>> SearchAsync(string query)
-    {
-        if (string.IsNullOrWhiteSpace(query))
-        {
-            return new ServiceResult<IEnumerable<AIResponse>>
-            {
-                Success = false,
-                Message = "Query não informada"
-            };
-        }
-        
-        var results = await _repository.SearchAsync(query) ?? Enumerable.Empty<AIResponse>();
-        return new ServiceResult<IEnumerable<AIResponse>>
-        {
-            Success = true,
-            Data = results
-        };
     }
 
     public async Task<ServiceResult<AIResponse>> GetByHashAsync(string hash)
     {
         var result = await _repository.GetByPromprHashAsync(hash);
         return result != null
-            ? new ServiceResult<AIResponse> { Success = true, Data = result }
-            : new ServiceResult<AIResponse> { Success = false, Message = "Registro não encontrado" };
+            ? ServiceResult<AIResponse>.Ok(result)
+            : ServiceResult<AIResponse>.Fail("Registro não encontrado");
     }
-    
-    
 
     #region Private Methods
     private static string GenerateHash(string requestPrompt)
@@ -129,14 +103,12 @@ public class AICacheService : IAICacheService
         var hashBytes = System.Security.Cryptography.SHA256.HashData(promptBytes);
         return Convert.ToHexString(hashBytes).ToLowerInvariant();
     }
-    
+
     private static string CleanTags(string requestTags)
     {
         return string.Join(",", requestTags.Split(",", StringSplitOptions.RemoveEmptyEntries)
             .Select(t => t.Trim())
             .Where(t => !string.IsNullOrWhiteSpace(t)));
     }
-
     #endregion
-
 }

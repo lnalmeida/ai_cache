@@ -16,22 +16,51 @@ public class AICacheRepository : IAICacheRepository
 
     public async Task<AIResponse?> GetByPromprHashAsync(string promtHash)
     {
-        return await _dbContext.AIResponses.FirstOrDefaultAsync(x => x.PromptHash == promtHash) ?? null;
+        return await _dbContext.AIResponses.FirstOrDefaultAsync(x => x.PromptHash == promtHash);
     }
 
-    public async Task<IEnumerable<AIResponse?>?> SearchAsync(string query)
+    public async Task<PagedResult<AIResponse>> GetAllPromptsPagedAsync(int page, int pageSize)
+    {
+        var query = _dbContext.AIResponses.AsNoTracking();
+        var totalCount = await query.CountAsync();
+        var items = await query.OrderByDescending(x => x.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<AIResponse>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
+    }
+
+    public async Task<PagedResult<AIResponse>> SearchPagedAsync(string query, int page, int pageSize)
     {
         var term = $"%{query.ToLower()}%";
-        var results = await _dbContext.AIResponses
+        var queryable = _dbContext.AIResponses
+            .AsNoTracking()
             .Where(x => EF.Functions.Like(x.Prompt.ToLower(), term) ||
                          EF.Functions.Like(x.Tags.ToLower(), term) ||
                          EF.Functions.Like(x.TechStack.ToLower(), term) ||
-                         EF.Functions.Like(x.FileName.ToLower(), term))
-            
+                         EF.Functions.Like(x.FileName.ToLower(), term));
+        
+        var totalCount = await queryable.CountAsync();
+        var items = await queryable
             .OrderByDescending(x => x.CreatedAt)
-            .Take(20)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
-        return results;
+
+        return new PagedResult<AIResponse>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
     }
 
     public async Task<AIResponse?> SaveAsync(AIResponse aiResponse)
