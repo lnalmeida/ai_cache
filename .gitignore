@@ -1,0 +1,68 @@
+# =========================
+# Sistema Operacional
+# =========================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# =========================
+# IDEs e Editores
+# =========================
+# JetBrains (Rider, WebStorm, IntelliJ)
+.idea/
+*.iws
+*.iml
+*.sln.dotsettings.user
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Visual Studio (Clássico - caso abra por engano)
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# =========================
+# Backend (.NET / C#)
+# =========================
+# Ignora binários compilados (recursivo para todas as pastas)
+[Bb]in/
+[Oo]bj/
+
+# Arquivos de segredos e configurações locais
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+
+# Logs
+*.log
+
+# =========================
+# Frontend (Node / React / Vite)
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Builds de produção
+dist/
+dist-ssr/
+
+# Arquivos de ambiente (segurança)
+.env
+.env.local
+.env.*.local
+
+# Arquivos temporários do Vite
+*.local
+
+# =========================
+# Testes e Cobertura
+# =========================
+coverage/
+TestResults/
