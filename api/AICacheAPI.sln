@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AICacheAPI", "src\AICacheAPI.csproj", "{D644CA2B-F232-4B6F-9B87-B0D6EA5BC6D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AICacheAPI.Tests", "tests\AICacheAPI.Tests.csproj", "{TEST-PROJ-GUID}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{D644CA2B-F232-4B6F-9B87-B0D6EA5BC6D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D644CA2B-F232-4B6F-9B87-B0D6EA5BC6D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D644CA2B-F232-4B6F-9B87-B0D6EA5BC6D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{TEST-PROJ-GUID}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{TEST-PROJ-GUID}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{TEST-PROJ-GUID}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{TEST-PROJ-GUID}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
