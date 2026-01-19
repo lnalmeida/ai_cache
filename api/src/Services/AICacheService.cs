@@ -54,7 +54,7 @@ public class AICacheService : IAICacheService
 
             var promptHash = GenerateHash(request.Prompt);
 
-            var existing = await _repository.GetByPromprHashAsync(promptHash);
+            var existing = await _repository.GetByPromptHashAsync(promptHash);
             var aiResponse = new AIResponse
             {
                 PromptHash = promptHash,
@@ -90,7 +90,7 @@ public class AICacheService : IAICacheService
 
     public async Task<ServiceResult<AIResponse>> GetByHashAsync(string hash)
     {
-        var result = await _repository.GetByPromprHashAsync(hash);
+        var result = await _repository.GetByPromptHashAsync(hash);
         return result != null
             ? ServiceResult<AIResponse>.Ok(result)
             : ServiceResult<AIResponse>.Fail("Registro não encontrado");

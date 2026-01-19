@@ -14,9 +14,9 @@ public class AICacheRepository : IAICacheRepository
         _dbContext = dbContext;
     }
 
-    public async Task<AIResponse?> GetByPromprHashAsync(string promtHash)
+    public async Task<AIResponse?> GetByPromptHashAsync(string promptHash)
     {
-        return await _dbContext.AIResponses.FirstOrDefaultAsync(x => x.PromptHash == promtHash);
+        return await _dbContext.AIResponses.FirstOrDefaultAsync(x => x.PromptHash == promptHash);
     }
 
     public async Task<PagedResult<AIResponse>> GetAllPromptsPagedAsync(int page, int pageSize)
@@ -66,7 +66,7 @@ public class AICacheRepository : IAICacheRepository
 
     public async Task<AIResponse?> SaveAsync(AIResponse aiResponse)
     {
-        var existing = await GetByPromprHashAsync(aiResponse.PromptHash);
+        var existing = await GetByPromptHashAsync(aiResponse.PromptHash);
 
         if (existing != null)
         {

@@ -18,11 +18,16 @@ public class AICacheDbContext : DbContext
         modelBuilder.Entity<AIResponse>()
             .HasIndex(x => x.PromptHash)
             .IsUnique();
+
+        modelBuilder.Entity<AIResponse>()
+            .HasIndex(x => x.Prompt);
             
         modelBuilder.Entity<AIResponse>()
             .HasIndex(x => x.Tags);
             
         modelBuilder.Entity<AIResponse>()
             .HasIndex(x => x.TechStack);
+        modelBuilder.Entity<AIResponse>()
+            .HasIndex(x => new { x.Tags, x.CreatedAt });
     }
 }
