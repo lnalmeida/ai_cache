@@ -1,3 +1,4 @@
+using System.Threading.RateLimiting;
 using AICacheAPI.Context;
 using AICacheAPI.Data.Repositories;
 using AICacheAPI.Interfaces;
@@ -15,6 +16,33 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<IAICacheRepository, AICacheRepository>();
 builder.Services.AddScoped<IAICacheService, AICacheService>();
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+    {
+        // Usa o endereço de IP do cliente como chave para o limite de taxa.
+        // Isso garante que cada usuário tenha seu próprio limite.
+        var clientIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        return RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: clientIp,
+            factory: partition => new FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 30,
+                Window = TimeSpan.FromMinutes(1),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 5
+            });
+    });
+
+    options.OnRejected = async (context, token) =>
+    {
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        context.HttpContext.Response.Headers.Append("Retry-After", "60");
+        await context.HttpContext.Response.WriteAsync("❌ Rate limit excedido. Tente novamente em 1 minuto.", token);
+    };
+});
 
 builder.Services.AddDbContext<AICacheDbContext>(options =>
 {
@@ -40,6 +68,7 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
+app.UseRateLimiter();
 app.UseHttpsRedirection();
 app.UseCors();
 app.UseRouting();
