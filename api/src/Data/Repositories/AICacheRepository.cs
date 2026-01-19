@@ -43,6 +43,7 @@ public class AICacheRepository : IAICacheRepository
         var queryable = _dbContext.AIResponses
             .AsNoTracking()
             .Where(x => EF.Functions.Like(x.Prompt.ToLower(), term) ||
+                         EF.Functions.Like(x.Response.ToLower(), term) || // <-- CORREÇÃO AQUI
                          EF.Functions.Like(x.Tags.ToLower(), term) ||
                          EF.Functions.Like(x.TechStack.ToLower(), term) ||
                          EF.Functions.Like(x.FileName.ToLower(), term));
