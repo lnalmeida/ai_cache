@@ -2,11 +2,13 @@ using AICacheAPI.Interfaces;
 using AICacheAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace AICacheAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[EnableRateLimiting("fixed")]
 public class AICacheController : ControllerBase
 {
     private readonly IAICacheService _service;

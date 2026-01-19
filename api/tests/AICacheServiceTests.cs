@@ -3,6 +3,7 @@ using AICacheAPI.Models;
 using AICacheAPI.Services;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Xunit;
 
 namespace AICacheAPI.Tests;
 
@@ -32,7 +33,7 @@ public class AICacheServiceTests
             TechStack = ".net"
         };
 
-        _mockRepo.Setup(repo => repo.GetByPromprHashAsync(It.IsAny<string>()))
+        _mockRepo.Setup(repo => repo.GetByPromptHashAsync(It.IsAny<string>()))
             .ReturnsAsync((AIResponse?)null); // Simula que não existe registro
         _mockRepo.Setup(repo => repo.SaveAsync(It.IsAny<AIResponse>()))
             .ReturnsAsync((AIResponse res) => res);
@@ -58,7 +59,7 @@ public class AICacheServiceTests
         };
         var existingResponse = new AIResponse { Id = 1, Prompt = "This is an existing prompt" };
 
-        _mockRepo.Setup(repo => repo.GetByPromprHashAsync(It.IsAny<string>()))
+        _mockRepo.Setup(repo => repo.GetByPromptHashAsync(It.IsAny<string>()))
             .ReturnsAsync(existingResponse); // Simula que o registro já existe
         _mockRepo.Setup(repo => repo.SaveAsync(It.IsAny<AIResponse>()))
             .ReturnsAsync((AIResponse res) => res);
@@ -149,7 +150,7 @@ public class AICacheServiceTests
     {
         // Arrange
         var hash = "non-existent-hash";
-        _mockRepo.Setup(repo => repo.GetByPromprHashAsync(hash))
+        _mockRepo.Setup(repo => repo.GetByPromptHashAsync(hash))
             .ReturnsAsync((AIResponse?)null);
 
         // Act

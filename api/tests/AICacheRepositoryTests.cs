@@ -101,7 +101,7 @@ public class AICacheRepositoryTests
     }
 
     [Fact]
-    public async Task GetByPromprHashAsync_ShouldReturnCorrectResponse()
+    public async Task GetByPromptHashAsync_ShouldReturnCorrectResponse()
     {
         await using var connection = new SqliteConnection("Filename=:memory:");
         connection.Open();
@@ -122,7 +122,7 @@ public class AICacheRepositoryTests
         using (var context = new AICacheDbContext(options))
         {
             var repository = new AICacheRepository(context);
-            result = await repository.GetByPromprHashAsync(targetHash);
+            result = await repository.GetByPromptHashAsync(targetHash);
         }
 
         Assert.NotNull(result);
