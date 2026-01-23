@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.ComTypes;
 using AICacheAPI.Context;
 using AICacheAPI.Interfaces;
 using AICacheAPI.Models;
@@ -8,7 +9,7 @@ namespace AICacheAPI.Data.Repositories;
 public class AICacheRepository : IAICacheRepository
 {
     private readonly AICacheDbContext _dbContext;
-    
+
     public AICacheRepository(AICacheDbContext dbContext)
     {
         _dbContext = dbContext;
@@ -43,11 +44,11 @@ public class AICacheRepository : IAICacheRepository
         var queryable = _dbContext.AIResponses
             .AsNoTracking()
             .Where(x => EF.Functions.Like(x.Prompt.ToLower(), term) ||
-                         EF.Functions.Like(x.Response.ToLower(), term) || // <-- CORREÇÃO AQUI
-                         EF.Functions.Like(x.Tags.ToLower(), term) ||
-                         EF.Functions.Like(x.TechStack.ToLower(), term) ||
-                         EF.Functions.Like(x.FileName.ToLower(), term));
-        
+                        EF.Functions.Like(x.Response.ToLower(), term) || // <-- CORREÇÃO AQUI
+                        EF.Functions.Like(x.Tags.ToLower(), term) ||
+                        EF.Functions.Like(x.TechStack.ToLower(), term) ||
+                        EF.Functions.Like(x.FileName.ToLower(), term));
+
         var totalCount = await queryable.CountAsync();
         var items = await queryable
             .OrderByDescending(x => x.CreatedAt)
@@ -74,11 +75,11 @@ public class AICacheRepository : IAICacheRepository
             existing.Tags = aiResponse.Tags;
             existing.TechStack = aiResponse.TechStack;
             existing.FileName = aiResponse.FileName;
-            
+
             _dbContext.AIResponses.Update(existing);
             return existing;
         }
-        
+
         _dbContext.AIResponses.Add(aiResponse);
         return aiResponse;
     }
