@@ -54,19 +54,21 @@ export const PromptCard: React.FC<PromptCardProps> = ({
         </p>
 
         <div className="flex flex-wrap gap-2">
-          {prompt.tags.map((tag) => (
+          {Array.isArray(prompt.tags) ?
+          ( prompt.tags.map((tag) => (
             <Badge key={tag} variant="default">
               {tag}
             </Badge>
-          ))}
+          ))) : null}
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {prompt.techStack.map((tech) => (
+          {Array.isArray(prompt.techStack) ?
+          prompt.techStack.map((tech) => (
             <Badge key={tech} variant="outline">
               {tech}
             </Badge>
-          ))}
+          )) : null }
         </div>
       </CardContent>
 

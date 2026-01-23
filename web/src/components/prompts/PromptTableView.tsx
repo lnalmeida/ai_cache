@@ -50,20 +50,22 @@ export const PromptTableView: React.FC<PromptTableViewProps> = ({
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex flex-wrap gap-1">
-                    {prompt.tags.map((tag) => (
+                    {Array.isArray(prompt.tags) ?
+                    prompt.tags.map((tag) => (
                       <Badge key={tag} variant="default" className="text-xs">
                         {tag}
                       </Badge>
-                    ))}
+                    )) : null}
                   </div>
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex flex-wrap gap-1">
-                    {prompt.techStack.map((tech) => (
+                    {Array.isArray(prompt.techStack) ?
+                    prompt.techStack.map((tech) => (
                       <Badge key={tech} variant="outline" className="text-xs">
                         {tech}
                       </Badge>
-                    ))}
+                    )) : null}
                   </div>
                 </td>
                 <td className="px-6 py-4">

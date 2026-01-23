@@ -34,6 +34,19 @@ export const PromptDetailDialog: React.FC<PromptDetailDialogProps> = ({
 
   if (!prompt) return null;
 
+  // Safely handle tags and techStack, which might be strings from the API or arrays from mock data.
+  const tagList = Array.isArray(prompt.tags)
+    ? prompt.tags
+    : typeof prompt.tags === 'string' && prompt.tags
+    ? prompt.tags.split(',').map(tag => tag.trim())
+    : [];
+
+  const techStackList = Array.isArray(prompt.techStack)
+    ? prompt.techStack
+    : typeof prompt.techStack === 'string' && prompt.techStack
+    ? prompt.techStack.split(',').map(tech => tech.trim())
+    : [];
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[90vw] w-full max-h-[90vh] overflow-y-auto">
@@ -42,12 +55,12 @@ export const PromptDetailDialog: React.FC<PromptDetailDialogProps> = ({
             <div className="flex-1 pr-8">
               <DialogTitle className="text-2xl mb-2">{prompt.prompt}</DialogTitle>
               <div className="flex flex-wrap gap-2 mt-3">
-                {prompt.tags.map((tag) => (
+                {tagList.map((tag) => (
                   <Badge key={tag} variant="default">
                     {tag}
                   </Badge>
                 ))}
-                {prompt.techStack.map((tech) => (
+                {techStackList.map((tech) => (
                   <Badge key={tech} variant="outline">
                     {tech}
                   </Badge>
