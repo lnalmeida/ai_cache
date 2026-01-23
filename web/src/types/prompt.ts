@@ -13,7 +13,7 @@ export interface Prompt {
 export interface SavePromptDTO {
   prompt: string;
   response: string;
-  tags?: string[];
-  techStack?: string[];
+  tags?: string;
+  techStack?: string;
   fileName: string;
 }
