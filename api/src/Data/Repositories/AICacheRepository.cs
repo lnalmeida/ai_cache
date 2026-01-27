@@ -88,4 +88,14 @@ public class AICacheRepository : IAICacheRepository
     {
         return await _dbContext.SaveChangesAsync();
     }
+
+    public async Task RemovePromptAsync(string hash)
+    {
+        var existing = await GetByPromptHashAsync(hash);
+
+        if (existing != null)
+        {
+            _dbContext.AIResponses.Remove(existing);
+        }
+    }
 }

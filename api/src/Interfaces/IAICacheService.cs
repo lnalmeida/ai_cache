@@ -8,6 +8,7 @@ public interface IAICacheService
     Task<ServiceResult<PagedResult<AIResponse>>> GetAllPromptsPagedAsync(int page, int pageSize);
     Task<ServiceResult<AIResponse>> SaveCodeAsync(SaveRequest request);
     Task<ServiceResult<AIResponse>> GetByHashAsync(string hash);
+    Task RemovePromptAsync(string hash);
 }
 
 public class ServiceResult<T>

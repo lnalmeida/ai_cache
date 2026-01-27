@@ -79,7 +79,7 @@ public class AICacheService : IAICacheService
 
             await _repository.SaveChangesAsync();
 
-            return ServiceResult<AIResponse>.Ok(aiResponse, existing != null ? "Registro atualizado com sucesso" : "Registro salvo com sucesso");
+            return ServiceResult<AIResponse>.Ok(aiResponse!, existing != null ? "Registro atualizado com sucesso" : "Registro salvo com sucesso");
         }
         catch (Exception ex)
         {
@@ -94,6 +94,20 @@ public class AICacheService : IAICacheService
         return result != null
             ? ServiceResult<AIResponse>.Ok(result)
             : ServiceResult<AIResponse>.Fail("Registro não encontrado");
+    }
+
+    public async Task RemovePromptAsync(string hash)
+    {
+        try
+        {
+            _logger.LogInformation("Excluindo registro");
+            await _repository.RemovePromptAsync(hash);
+            await _repository.SaveChangesAsync();
+        }
+        catch (Exception ex) {
+            _logger.LogError(ex, "Erro excluindo registro");
+            throw new Exception("Erro interno do servidor", ex);
+        }
     }
 
     #region Private Methods

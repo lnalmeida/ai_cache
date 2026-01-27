@@ -9,4 +9,5 @@ public interface IAICacheRepository
     Task<PagedResult<AIResponse>> GetAllPromptsPagedAsync(int page, int pageSize);
     Task<AIResponse?> SaveAsync(AIResponse aiResponse);
     Task<int> SaveChangesAsync();
+    Task RemovePromptAsync(string hash);
 }

@@ -47,4 +47,13 @@ public class AICacheController : ControllerBase
         var result = await _service.GetByHashAsync(decodedHash);
         return Ok(result);
     }
+    
+    [HttpDelete("hash/{*hash}")]
+    public async Task<ActionResult> DeleteByHash(string hash)
+    {
+        var decodedHash = WebUtility.UrlDecode(hash);
+        await _service.RemovePromptAsync(decodedHash);
+        return Ok();
+    }
 }
+    
