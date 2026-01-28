@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices.ComTypes;
 using AICacheAPI.Context;
 using AICacheAPI.Interfaces;
 using AICacheAPI.Models;
@@ -15,7 +14,7 @@ public class AICacheRepository : IAICacheRepository
         _dbContext = dbContext;
     }
 
-    public async Task<AIResponse?> GetByPromptHashAsync(string promptHash)
+    public async Task<AIResponse?> GetByPromptHashAsync(string? promptHash)
     {
         return await _dbContext.AIResponses.FirstOrDefaultAsync(x => x.PromptHash == promptHash);
     }
@@ -71,6 +70,7 @@ public class AICacheRepository : IAICacheRepository
 
         if (existing != null)
         {
+            existing.Prompt = aiResponse.Prompt;
             existing.Response = aiResponse.Response;
             existing.Tags = aiResponse.Tags;
             existing.TechStack = aiResponse.TechStack;

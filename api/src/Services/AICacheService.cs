@@ -54,7 +54,7 @@ public class AICacheService : IAICacheService
 
             var promptHash = GenerateHash(request.Prompt);
 
-            var existing = await _repository.GetByPromptHashAsync(promptHash);
+            var existing = await _repository.GetByPromptHashAsync(request.PromptHash);
             var aiResponse = new AIResponse
             {
                 PromptHash = promptHash,
@@ -69,6 +69,7 @@ public class AICacheService : IAICacheService
             {
                 _logger.LogInformation("Cache HIT: {Id}", existing.Id);
                 aiResponse.Id = existing.Id;
+                aiResponse.PromptHash = existing.PromptHash;
                 aiResponse = await _repository.SaveAsync(aiResponse);
             }
             else
